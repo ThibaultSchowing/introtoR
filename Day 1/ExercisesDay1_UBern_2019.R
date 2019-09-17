@@ -3,6 +3,11 @@
 # Exercises day 1
 # 
 
+# clear environement variables
+rm(list=ls())
+getwd()
+setwd("C:/Users/thsch/Desktop/introtoR/Day 1")
+
 # Exercize 1.1 -------------------------------------------------------------------
 # 
 #  Create the following 3 vectors with the 
