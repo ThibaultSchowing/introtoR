@@ -2,7 +2,7 @@
 # R course 2019
 # Exercises day 2
 # -------------------------------------------------------------------
-
+rm(list = ls())
 # Exercise 2.1 -------------------------------------------------------------------
 # 
 # Load data set from "StatWiSo2003.txt"
@@ -49,7 +49,7 @@ vec2 <- df$Height
 length(vec2)
 
 #m1 <- cbind(vec1, vec2) gives a list of two elements
-m1 <- matrix(vec1, vec2, ncol = 2, nrow = length(vec1))
+m1 <- matrix(c(vec1, vec2), ncol = 2, nrow = length(vec1))
 colnames(m1) = c("Weight", "Height")
 
 
