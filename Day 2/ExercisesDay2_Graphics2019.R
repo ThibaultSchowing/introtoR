@@ -99,8 +99,14 @@ abline(h = 500, col = "red")
 # 2.10.4 Use the function rug() to add the data points.
 # 2.10.5 Repeat the same exercise, but with a sample of 20 values.
 
-
+layout(matrix(c(1:2),nrow=1));
 # WTF with the y limit ?! (doesn't show anything cuz it's too low.)
 x <- rnorm(100, 170, 20)
 hist(x, ylab = "frequency", main = "Histogram of sample drawn from a Normal Distribution", xlim = c(100,230))
 rug(x)
+
+x <- rnorm(20, 170, 20)
+hist(x, ylab = "frequency", main = "Histogram of sample drawn from a Normal Distribution", xlim = c(100,230))
+rug(x)
+
+par(mfrow=c(1,1))
