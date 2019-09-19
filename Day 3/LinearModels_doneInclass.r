@@ -30,3 +30,4 @@ summary(iris.anova)
 abline(h=1.46200, col="blue", lty=3)
 abline(h=1.46200+2.79800, col="red", lty=3)
 abline(h=1.46200+4.09000, col="green", lty=3)
+
