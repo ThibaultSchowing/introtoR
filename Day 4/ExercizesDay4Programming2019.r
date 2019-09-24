@@ -112,13 +112,13 @@ n = 50
 # create a vector of "nbflip" results of numhead(n) function
 freq <- replicate(nbflips, numheads(n))
 
-hist(freq, ylab = "Frequency", xlab = "Number of Heads")
+hist(freq, freq = FALSE, ylab = "Frequency", xlab = "Number of Heads")
 
 # Create a sample of 50 numbers which are incremented by 1.
 x <- seq(0,50,by = 1)
 
 # Create the binomial distribution. (TutorialsPoint)
-y <- dbinom(x,50,0.5)*10000 
+y <- dbinom(x,50,0.5)
 lines(x, y)
 
 plot(cumsum(freq) / 1:10000, lwd = 1, pch = 20)
@@ -130,19 +130,58 @@ abline(h = 25, col = "red")
 #    positions found in 100 sequences of 10 Kb drawn from a recently exponentially 
 #    growing population
 
-
+dfseq <- read.csv("PolymSites10KbExpGrowth.txt", header = FALSE, stringsAsFactors = FALSE, sep = '\n')
+str(dfseq)
+length(dfseq$V1)
 
 # b) Import the function convertStringToCharVector contained in the file 
 #    "ConvertStringToCharVector.r" and use it to convert the DNA sequences 
 #    into arrays of single nucleotides
 
-# 
+source("ConvertStringToCharVector.r")
+
+#Create a list of vectors
+
+lseq <- list()
+
+for (i in 1:length(dfseq$V1)) {
+  lseq[[i]] <- c(convertStringToCharVector(dfseq$V1[i]))
+}
+str(lseq)
+
+ 
 # c) Write a function that returns the number of positions at which two vectors 
 #    are different and use it to compute the number of differences between all the 
 #    possble pairs of DNA sequences
+
+# takes a list of vector as input
+countDiff <- function(lstSeq){
+  c <- combn(1:length(lstSeq), 2, simplify = FALSE)
+  # c is a list of all possible paires
+  
+  totalDiff <- 0
+  lstDiff <- list()
+  
+  for (p in c) {
+    nbdif <- length(which(lstSeq[[p[1]]] != lstSeq[[p[2]]]))
+    
+    totalDiff = totalDiff + nbdif
+    lstDiff <- c(lstDiff, nbdif)
+  }
+  print(totalDiff)
+  return(unlist(lstDiff))
+}
+
+ldif <- countDiff(lseq)
+str(ldif)
+
+
 
 # 
 # d) Plot the distribution of the number of differences, compute its mean and variance, 
 #    and report on the graph the mean of the distribution in blue 
 
+hist(ldif)
+print(var(ldif))
+abline(v = mean(ldif), col = "Blue")
 
