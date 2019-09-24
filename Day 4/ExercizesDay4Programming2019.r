@@ -11,26 +11,13 @@ seq2 <- sample(1:9, 1000, replace = TRUE)
 
 # b) Write a function compSeq that returns the number of positions at which seq1 and seq2 differ
 
+
+
 compSeq <- function(seqa, seqb){
-  # Will contain number of positions at which elements are the same.
-  match <- 0
-  if(length(seqa) != length(seqb)){
-    print("Length of sequences don't match.")
-    return(NULL)
-  }
-  else{
-    for (idx in 1:length(seqa)) {
-      if(seqa[idx] == seqb[idx]){
-        match <- match + 1
-      }
-    }
-  }
-  
-  return(length(seq1) - match)
+  return(length(which(seqa!=seqb)))
 }
 
 print(compSeq(seq1, seq2))
-
 
 # Exercize 4.1 -------------------------------------------------------------------
 # 
@@ -95,22 +82,55 @@ nbNA <- repl[[2]]
 # Write the code to simulate rolling a dice 100 times and to count the number of 6's
 # in as few instructions as possible
 
-
+# Here we create a random sequence (rolling a dice 100 times) and count the number of 6's.
+# note that we can't access the sequence here. To be able to access the sequence we should separate 
+# the "sample" and "sum" functions. 
+nb <- sum(sample(1:6, size = 100, replace = TRUE) == 6)
 
 # Exercize 4.4 ----------------------------------
 # 
 # Implement a function "numheads" returning the number of heads obtained by tossing a coin n times
-
 # 
+
+
+
+numheads <- function(n){
+  coin <- c("Head", "Tail")
+  toss <- sample(coin, n, replace = TRUE)
+  return(sum(toss == "Head"))
+}
+
+
+
 # Check that the number of heads r follows a binomial distribution with mean n/2
 # For this, make a plot of the number of heads obtained by calling the function numheads 
 # 10,000 times for n=50, and superimpose the corresponding binomial distribution of r
+
+nbflips = 10000
+n = 50
+
+# create a vector of "nbflip" results of numhead(n) function
+freq <- replicate(nbflips, numheads(n))
+
+hist(freq, ylab = "Frequency", xlab = "Number of Heads")
+
+# Create a sample of 50 numbers which are incremented by 1.
+x <- seq(0,50,by = 1)
+
+# Create the binomial distribution. (TutorialsPoint)
+y <- dbinom(x,50,0.5)*10000 
+lines(x, y)
+
+plot(cumsum(freq) / 1:10000, lwd = 1, pch = 20)
+abline(h = 25, col = "red")
 
 #Exercise 4.5 ----------------------------------
 # 
 # a) Read the file "PolymSites10KbExpGrowth.txt", which contains the polymorphic 
 #    positions found in 100 sequences of 10 Kb drawn from a recently exponentially 
 #    growing population
+
+
 
 # b) Import the function convertStringToCharVector contained in the file 
 #    "ConvertStringToCharVector.r" and use it to convert the DNA sequences 
