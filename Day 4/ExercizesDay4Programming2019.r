@@ -48,6 +48,13 @@ factorial <- function(n){
 # The output of the function is the modified data frame and the number of entries with missing data.
 # Then apply your function to the file "StatWiSo2003.txt"
 
+MDintoNA_corr <- function(dafr, md){
+  na.count=sum(dafr==md)
+  dafr[dafr==md]=NA
+  list(na.count=na.count, df=dafr)
+}
+
+
 MDintoNA <- function(inputdf, md = "?"){
   # R arguments are not passed by reference
   # we'll return a copy of inputdf
@@ -69,6 +76,7 @@ MDintoNA <- function(inputdf, md = "?"){
 }
 
 df <- read.csv("StatWiSo2003.txt", header = TRUE, sep = '\t')
+df2 <- read.table("StatWiSo2003.txt", header=T)
 summary(df)
 # repl is a list containing the dataframe with NA instead of a string for missing data
 # and the number of missing data
@@ -76,6 +84,7 @@ repl <- MDintoNA(df)
 newdf <- repl[[1]]
 nbNA <- repl[[2]]
 
+asdf <- MDintoNA_corr(df2, "?")
 
 # Exercize 4.3.----------------------------------
 
