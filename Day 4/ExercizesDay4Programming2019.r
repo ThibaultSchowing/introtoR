@@ -140,6 +140,7 @@ abline(h = 25, col = "red")
 #    growing population
 
 dfseq <- read.csv("PolymSites10KbExpGrowth.txt", header = FALSE, stringsAsFactors = FALSE, sep = '\n')
+# Instead of stringAsFactor=F we can set "what=character()
 str(dfseq)
 length(dfseq$V1)
 
@@ -190,7 +191,7 @@ str(ldif)
 # d) Plot the distribution of the number of differences, compute its mean and variance, 
 #    and report on the graph the mean of the distribution in blue 
 
-hist(ldif)
+hist(ldif, breaks = seq(0,max(ldif),1), xlab = "Number of Pairwise Differences")
 print(var(ldif))
 abline(v = mean(ldif), col = "Blue")
 
