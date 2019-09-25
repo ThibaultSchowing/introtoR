@@ -149,7 +149,17 @@ length(dfseq$V1)
 #    into arrays of single nucleotides
 
 source("ConvertStringToCharVector.r")
+#######CORRECTIONS
 
+#numPolymSite=nchar(polymSite[1]); numPolymSite
+#numSeq==length(polymSites);mumSeq
+#polymSiteArray=array(dim=c(numSeqs, numPolymSite))
+
+#for(i in 1:numSeqs) polymSiteArray[i,] = convertStringToCharVector(polymSite[i,])
+#head(polymSiteArray)
+
+
+########
 #Create a list of vectors
 
 lseq <- list()
@@ -193,5 +203,5 @@ str(ldif)
 
 hist(ldif, breaks = seq(0,max(ldif),1), xlab = "Number of Pairwise Differences")
 print(var(ldif))
-abline(v = mean(ldif), col = "Blue")
+abline(v = mean(ldif), col = "Blue", lwd=2)
 
