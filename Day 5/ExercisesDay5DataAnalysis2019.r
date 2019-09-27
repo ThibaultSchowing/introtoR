@@ -47,7 +47,7 @@ qqnorm(weights, main="QQPlot of students weight")
 qqline(weights)
 
 
-dev.off()
+
 
 # others / ignore
 qqnorm(heights, main="QQPlot of students heights")
@@ -121,7 +121,7 @@ for(i in 0:1000){
   
   mc <- c(mc, mean)
   
-  cat("Low: ", low, "\tHi: ", hi, "\tMean", mean, "\n")
+  #cat("Low: ", low, "\tHi: ", hi, "\tMean", mean, "\n")
   
   # count if the mean is in the CI
   if(dfmean > low & dfmean < hi){
@@ -133,14 +133,18 @@ for(i in 0:1000){
 #Number of time true mean is in CI
 print(meanInCI)
 
-
 hist(mc, freq = F, main = "Random sample of Students Heights")
 
+plot(density(mc))
+
 x=seq(150, 180, length.out = 100)
-y=dnorm(x, mean=mean(df$Height, na.rm=T), sd = sd(df$Height, na.rm = T))
+
+######COOOOOL
+# On doit diviser par la sqrt(20) car la distribution variance densité moyenne etc trop chaud
+y=dnorm(x, mean=mean(df$Height, na.rm=T), sd = sd(df$Height, na.rm = T)/sqrt(20))
 lines(x, y, col="blue", lwd=2)
 
-ysim = dnorm(x, mean=170, sd=10)
+ysim = dnorm(x, mean=170, sd=10/sqrt(20))
 lines(x, ysim, col="red", lwd=2)
 
 
@@ -152,6 +156,16 @@ lines(x, ysim, col="red", lwd=2)
 
 df2 <- read.table("StudentData2016.txt", header = TRUE, na.strings = "?")
 
+ttmale <- t.test(df2$Height[df2$Sex=="M"])
+ttfemale <- t.test(df2$Height[df2$Sex=="W"])
+
+print(ttmale$conf.int)
+print(ttfemale$conf.int)
+
+# To formally test
+t.test(df2$Height[df2$Sex=="M"],df2$Height[df2$Sex=="W"])
+
+# Ho dingue: mens are taller
 
 # Exercize 5.5 -------------------------------------------------------------------------
 #
@@ -159,12 +173,43 @@ df2 <- read.table("StudentData2016.txt", header = TRUE, na.strings = "?")
 # "Sex" and "Smoking". Use the chi square test to test if the two variables are independent.
 # Hint 1: If you pass a contingency table to the function "chisq.test, Pearson's chi-squared test is 
 # performed with the null hypothesis that the joint distribution of the cell counts in a 2-dimensional 
+my.table <- table(df2$Sex, df2$Smoking);my.table
+prop.table(my.table)
+
+chisq.test(my.table)
+
 # contingency table is the product of the row and column marginals.
 # Hint 2: Two random variables X and Y are independent if P (X = x and Y = y) = P(X = x) P(Y = y).
+
+#p-value is < 0.05 -> smaller than 0.05 -> smoking habits are different.
+# Warnings: some of the expected entries are smaller than 5 -> small sample
 
 # Exercize 5.6 --------------------------------------------------------------------
 #
 # 5.6.1 Make a QQ-plot to compare the distributions of weights and heights in 2016. What does the plot tell you?
+
+weights <- df2$Weight
+heights <- df2$Height
+
+
+qqp=qqplot(weights, heights)
+relm=lm(qqp$y~qqp$x)
+abline(relm, lwd=2, col="blue")
+
+plot(weights, heights, main="Height vs Weight")
+my.lm <- lm(heights~weights)
+abline(my.lm$coefficients[1], my.lm$coefficients[2])
+
+
+
+
+
+#NOT WHAT IS ASKED
+qqnorm(weights, main="QQPlot of students weight")
+qqline(weights)
+
+qqnorm(heights, main="QQPlot of students height")
+qqline(heights)
 
 
 # 5.6.2 Now plot the line that goes through the qqplot points. What does it tell you? 
@@ -173,7 +218,19 @@ df2 <- read.table("StudentData2016.txt", header = TRUE, na.strings = "?")
 # the data against each other and overlay a regression line obtained using the lm function
 
 
+
 #Exercise 5.7 --------------------------------------------------------
 #
 # Follow the smoking habits in years 2003, 2014 and 2016. What do you see?
+
+df2003 <- read.table("StatWiSo2003.txt", header = T, na.strings = "?")
+df2014 <- read.csv("StudentData2014.txt", header = T, na.strings = "-")
+df2016 <- read.csv("StudentData2016.txt", header = T, na.strings = "?")
+
+smoke2003 <- table(df2003$Rauchen)/length(df2003$Rauchen)
+
+
+
+
+
 
