@@ -230,27 +230,67 @@ legend("topright",
 #      by pooling the data from the 3 years.
 
 # create the data frame (vector -> matrix -> data frame)
-data3y <- c(df2003$Height, df2017$Height, df2018$Height, df2003$Weight, df2017$Weight, df2018$Weight)
-data3y <- as.data.frame(matrix(data3y, ncol=2))
-colnames(data3y) = c("Height", "Weight")
+data3y <- c(df2003$Weight, df2017$Weight, df2018$Weight, df2003$Height, df2017$Height, df2018$Height)
+data3y <- as.data.frame(na.omit(matrix(data3y, ncol=2)))
+colnames(data3y) = c("Weight", "Height")
 
 # Linear regression
-data3y.lm <- lm(data3y$Height~data3y$Weight)
-dev.off()
-plot(data3y)
-#lines(faithful$eruptions, fitted(fit), col="blue")
-lines(data3y$Height, fitted(data3y.lm), col="red")
+data3y.lm <- lm(data3y$Weight~data3y$Height)
+# Diagnostic of the linear regression
+summary(data3y.lm)
+
+# We can see that the p value is smaller than 2.2e-16
+# It makes sense that the Height is significantly related to the weight.
+
+
 
 # Answer the following questions as a comment in your script (1 line each answer)
 # B.1.1. Is there a significant relationship between the two variables?
+# - Yes, the p-value is very low thus there is a few chance that the corelation is due to randomness
 # B.1.2. What is the value of the slope? Is it significant?
+# - 0.817. The significance code *** meaning that the p-value is really low ( < 0.05 = very significant)
 # B.1.3. What is the value of the intercept? Is it significant?
+# - -76.842. Same than for the slope, the intercept's p-value is smaller than 0.05 = very significant
 
 # B.2. Make a plot with the regression line.
 # note that for plot we need to put in the x axis the independent
 # and in the y axis the dependent variable
 
+
+plot(data3y$Height, 
+     data3y$Weight, 
+     xlab = "Height", 
+     ylab = "Weight", 
+     main = "Height against Weight")
+
+abline(a=data3y.lm$coefficients[1], 
+       b=data3y.lm$coefficients[2], 
+       col="red", 
+       lwd=2)
+
+legend("topright", 
+       c("Regression line"), 
+       lty=c(1), 
+       col=c("red"), 
+       bty = "n")
+
+
 # B.3. Do the residuals look normally distributed? 
 # Perform qqplot analysis of the residuals
+
+# Save and restore graph params. 
+def.par=par(no.readonly = T)
+par(mfrow = c(2, 2))
+plot(data3y.lm)
+par(def.par)
+
+# Or with just qqnorm and the standartized residuals
+# We can see that they are looking pretty nicely normally distributed 
+sr <- rstandard(data3y.lm)
+qqnorm(sr,  
+       ylab="Standardized Residuals", 
+       xlab="Normal Scores",
+       main="QQ plot") 
+qqline(sr, lwd=2, col="red")
 
 
