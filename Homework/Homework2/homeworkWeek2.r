@@ -229,6 +229,17 @@ legend("topright",
 # B.1. Make a linear regression of the weight against height
 #      by pooling the data from the 3 years.
 
+# create the data frame (vector -> matrix -> data frame)
+data3y <- c(df2003$Height, df2017$Height, df2018$Height, df2003$Weight, df2017$Weight, df2018$Weight)
+data3y <- as.data.frame(matrix(data3y, ncol=2))
+colnames(data3y) = c("Height", "Weight")
+
+# Linear regression
+data3y.lm <- lm(data3y$Height~data3y$Weight)
+dev.off()
+plot(data3y)
+#lines(faithful$eruptions, fitted(fit), col="blue")
+lines(data3y$Height, fitted(data3y.lm), col="red")
 
 # Answer the following questions as a comment in your script (1 line each answer)
 # B.1.1. Is there a significant relationship between the two variables?
