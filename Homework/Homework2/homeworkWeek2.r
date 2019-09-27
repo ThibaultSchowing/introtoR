@@ -108,11 +108,11 @@ def.par=par(no.readonly = T) #- saving default parameters before using layout()
 # One line, 3 columns. Equivalent to par(mfrow=c(1,3))
 layout(matrix(c(1,2,3), 1, 3))
 
-hist(df2003$Height, xlim = c(150, 200), xlab = "Heights 2003")
+hist(df2003$Height, xlim = c(150, 200), xlab = "Height [cm]", main = "Heights 2003")
 abline(v=mean(df2003$Height, na.rm = T), lwd=2, col="red" )
-hist(df2017$Height, xlim = c(150, 200), xlab = "Heights 2017")
+hist(df2017$Height, xlim = c(150, 200), xlab = "Height [cm]", main = "Heights 2017")
 abline(v=mean(df2017$Height, na.rm = T), lwd=2, col="red" )
-hist(df2018$Height, xlim = c(150, 200), xlab = "Heights 2018")
+hist(df2018$Height, xlim = c(150, 200), xlab = "Height [cm]", main = "Heights 2018")
 abline(v=mean(df2018$Height, na.rm = T), lwd=2, col="red" )
 
 # - They are just a bit shorter in 2017 but there's no big difference
@@ -132,17 +132,28 @@ par(def.par) #- Restore default parameters after using layout()
 #    is significantly different from the mean height in 2018.
 #    Did the average height increased through time?
 
-
+ttmean318H <- t.test(df2003$Height, df2018$Height)
+# - The means are almost identical. p-value for the Ttest is 0.97: the diffenrences have 97% chance of being random. -> means are not significantly different
 
 # 3.2. Use a t.test() to test if the means of the weigth of 2003
 #    is significantly different from the weigth in 2018.
 #    Did the average height increased through time?
 
+ttmean318W <- t.test(df2003$Weight, df2018$Weight)
+# - p-value is a bit higher but still nothing significant (0.282)
+
+
 # 3.3. Provide answers as a comment in your script to the following questions
 # 3.3.1. What is the null hypothesis? 
+# - Null hypothesis:        There is no difference between the means of the two sample
+# - Alternative hypothesis: The difference between the means is not equal to 0
 # 3.3.2. What is the p-value? 
+# - the p-value is the probability that the difference is due to randomness. In other words, the probability that the null hypothesis is true. 
+
 # 3.3.3. Is there a significant difference between 2003 and 2018? 
+# - No. 
 # Answers to 3.3. should be short answers (1 line each answer).
+
 
 #### -----------------------------------------------------------------------------------------------
 # EXERCISE 4 
@@ -155,11 +166,22 @@ par(def.par) #- Restore default parameters after using layout()
 #      b) write down the variables that you need to give as 
 #         INPUT to the function in the comments
 
+# smpl
+# Parameters: n: number of individuals to sample
+#             w: matrix of weights 
+#
+# Return value: mean of the n sampled weight.
+smpl <- function(n,w){
+  w <- w[!is.na(w)]
+  s <- sample(w, n, replace = TRUE)
+  return(mean(s))
+}
 
 # 4.2. Call the function to get the mean of the height of a sample 
 #      of 41 individuals (n=41), given as input the vector 
 #      with the height from the Bern students dataset of year 2003.
 
+mhsmpl2003 <- smpl(41,df2003$Height)
 
 # 4.3. Use a for loop to call the function you did in 5.1. 1000 times, 
 #      to compute the distribution of the mean of 41 individuals. 
@@ -173,6 +195,14 @@ par(def.par) #- Restore default parameters after using layout()
 #      Save all the results into a vector with 1000 entries, 
 #      each corresponding to the mean of each sample.
 
+# Vector for sampled means
+splmeans <- c()
+
+for(i in 1:1000){
+  m <- smpl(41,df2003$Height)
+  splmeans <- c(splmeans, m)
+}
+
 
 # 4.4. Count the proportion of simulations larger than the observed mean of 2018.
 #      Plot the histogram of the simulated (sampled) means.
@@ -181,13 +211,25 @@ par(def.par) #- Restore default parameters after using layout()
 #      change in the mean weight from 2003 to 2018 in the Bern students? 
 #      What is the null hypothesis underlying this resampling procedure?
 
+# Number of simulated obs > mean of 2018
+nbGT2018 <- length(which(splmeans > mean(df2018$Height, na.rm = T)))
+hist(splmeans, main="Sampled means", xlab="Height [cm]")
+abline(v=mean(df2018$Height, na.rm = T), lwd=2, col="red")
 
-
+# Just to try
+abline(v=mean(splmeans), lwd=1, lty=2, col="blue")
+legend("topright", 
+       c("Mean 2018", "Mean sample"), 
+       lty=c(1,2), 
+       col=c("red","blue"), 
+       bty = "n")
 
 ### -----------------------------------------------------------
 # BONUS EXERCISE (not compulsory, but interesting if you want to get extra points)
 # B.1. Make a linear regression of the weight against height
 #      by pooling the data from the 3 years.
+
+
 # Answer the following questions as a comment in your script (1 line each answer)
 # B.1.1. Is there a significant relationship between the two variables?
 # B.1.2. What is the value of the slope? Is it significant?
